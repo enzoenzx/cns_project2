@@ -13,18 +13,24 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 app.post('/upload', (req, res) => {
-    const jsonData = req.body;
+  try {
+    const jsonData = JSON.parse(req.body); // Parse the request body as JSON
     const targetPath = path.join(uploadsDir, 'data.json');
 
     fs.writeFile(targetPath, JSON.stringify(jsonData, null, 2), err => {
-        if (err) {
-            console.error('Failed to save file:', err);
-            return res.status(500).send('Failed to save file');
-        }
-        res.send('File uploaded and saved successfully');
-        console.log('File uploaded and saved successfully');
+      if (err) {
+        console.error('Failed to save file:', err);
+        return res.status(500).send('Failed to save file');
+      }
+      res.send('File uploaded and saved successfully');
+      console.log('File uploaded and saved successfully');
     });
+  } catch (error) {
+    console.error('Error parsing JSON data:', error);
+    return res.status(400).send('Invalid JSON data provided'); // Send a specific error message
+  }
 });
+
 
 app.get('/download/:filename', (req, res) => {
     const fileName = req.params.filename;
