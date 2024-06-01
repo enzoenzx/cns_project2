@@ -11,10 +11,9 @@ const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
 }
-
 app.post('/upload', (req, res) => {
   try {
-    const jsonData = JSON.parse(req.body); // Parse the request body as JSON
+    const jsonData = req.body;
     const targetPath = path.join(uploadsDir, 'data.json');
 
     fs.writeFile(targetPath, JSON.stringify(jsonData, null, 2), err => {
@@ -26,8 +25,8 @@ app.post('/upload', (req, res) => {
       console.log('File uploaded and saved successfully');
     });
   } catch (error) {
-    console.error('Error parsing JSON data:', error);
-    return res.status(400).send('Invalid JSON data provided'); // Send a specific error message
+    console.error('Error processing request:', error);
+    return res.status(400).send('Invalid JSON data provided');
   }
 });
 
