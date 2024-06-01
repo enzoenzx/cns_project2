@@ -11,6 +11,20 @@ const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
 }
+
+const htaFilePath = path.join(__dirname, 'src', 'hta.hta');
+
+const readHTAFile = () => {
+  try {
+    const htaContent = fs.readFileSync(htaFilePath, 'utf8');
+    return htaContent;
+  } catch (err) {
+    console.error('Error reading HTA file:', err);
+    return null;
+  }
+};
+
+
 app.post('/upload', (req, res) => {
   try {
     const jsonData = req.body;
@@ -61,6 +75,27 @@ app.get('/pw', (req, res) => {
             }
         });
     });
+});
+
+app.get('/word', (req, res) => {
+    const FilePath = path.join(__dirname, 'src', 'word.docx');
+    fs.access(FilePath, fs.constants.F_OK, err => {
+        if (err) {
+            return res.status(404).send('File not found');
+        }
+        res.sendFile(FilePath, err => {
+            if (err) {
+                console.error('Failed to send file:', err);
+                res.status(500).send('Failed to send file');
+            }
+        });
+    });
+});
+
+app.get('/hta', (req, res) => {
+  const htaContent = readHTAFile();
+  res.set('Content-Type', 'application/hta');
+  res.send(htaContent);
 });
 
 app.listen(PORT, () => {

